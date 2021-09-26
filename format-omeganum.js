@@ -1,3 +1,6 @@
+// Set to 1 to print debug information to console
+let FORMAT_DEBUG = 0
+
 function commaFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
     let zeroCheck = num.array ? num.array[0] : num
@@ -22,11 +25,12 @@ function regularFormat(num, precision) {
 
 // Basically does the opposite of what standardize in OmegaNum does
 function polarize(array, smallTop=false) {
-    if (array[0] == Number.POSITIVE_INFINITY) return [array[0], array[array.length-1], array.length-1]
-    do {
+    if (FORMAT_DEBUG >= 1) console.log("Begin polarize: "+array)
+    if (array[0] != Number.POSITIVE_INFINITY) do {
         while (array[0] >= 10) {
             array[0] = Math.log10(array[0])
             array[1] = (array[1]||0) + 1
+            if (FORMAT_DEBUG >= 1) console.log("Increment element 1: "+array)
         }
         let l = array.length
         for (i=1;i<l-1;++i) {
@@ -34,15 +38,18 @@ function polarize(array, smallTop=false) {
             array[0] = Math.log10(array[0])+array[i]
             array[i] = 0
             array[i+1] += 1
+            if (FORMAT_DEBUG >= 1) console.log("Increment element "+(i+1)+": "+array)
             if (array[0] >= 10) break
         }
         if (array[0] < 10 && array[l-1] >= 10 && smallTop) {
             array[0] = Math.log10(array[0])+array[l-1]
             array[l-1] = 0
             array[l] = 1
+            if (FORMAT_DEBUG >= 1) console.log("Increment top: "+array)
         }
     } while (array[0] >= 10)
-    return [array[0], array[array.length-1], array.length-1]
+    if (FORMAT_DEBUG >= 1) console.log("Result: bottom "+array[0]+", top "+array[array.length-1]+", length "+array.length)
+    return {bottom: array[0], top: array[array.length-1], length: array.length}
 }
 
 function format(decimal, precision=2, small=false) {
@@ -72,7 +79,7 @@ function format(decimal, precision=2, small=false) {
     }
     else if (decimal.lt("10^^1000000")) {
         let pol = polarize(array)
-        return regularFormat(pol[0], precision3) + "F" + commaFormat(pol[1])
+        return regularFormat(pol.bottom, precision3) + "F" + commaFormat(pol.top)
     }
     else if (decimal.lt("10^^^5")) {
         if ((array[2]||0) >= 1){
@@ -86,7 +93,7 @@ function format(decimal, precision=2, small=false) {
     }
     else if (decimal.lt("10^^^1000000")) {
         let pol = polarize(array)
-        return regularFormat(pol[0], precision3) + "G" + commaFormat(pol[1])
+        return regularFormat(pol.bottom, precision3) + "G" + commaFormat(pol.top)
     }
     else if (decimal.lt("10^^^^5")) {
         if ((array[3]||0) >= 1){
@@ -100,7 +107,7 @@ function format(decimal, precision=2, small=false) {
     }
     else if (decimal.lt("10^^^^1000000")) {
         let pol = polarize(array)
-        return regularFormat(pol[0], precision3) + "H" + commaFormat(pol[1])
+        return regularFormat(pol.bottom, precision3) + "H" + commaFormat(pol.top)
     }
     else if (decimal.lt("10^^^^^5")) {
         if ((array[4]||0) >= 1){
@@ -114,7 +121,7 @@ function format(decimal, precision=2, small=false) {
     }
     
     let pol = polarize(array, true)
-    return regularFormat(Math.log10(pol[0]) + pol[1], precision4) + "J" + commaFormat(pol[2])
+    return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "J" + commaFormat(pol.length - 1)
 }
 
 function formatWhole(decimal) {
