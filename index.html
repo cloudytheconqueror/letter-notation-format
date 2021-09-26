@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>	
+<html>
+  <head>
+    <title>format-omeganum.js test page</title>
+    <script type="text/javascript" src="https://raw.githack.com/Naruyoko/OmegaNum.js/master/OmegaNum.js"></script>
+    <script type="text/javascript" src="./format-omeganum.js"></script>
+    <script>
+      window.onload=function (){
+        document.getElementById("button").onclick=function (){
+          var e=document.getElementById("input").value;
+          var q;
+          if (e[0]=="[") q=OmegaNum(JSON.parse(e));
+          else q=OmegaNum(e);
+          document.getElementById("output").innerHTML
+            = format(q)+"<br>"+q.toString()+"<br>"+q.toNumber()+"<br>"+JSON.stringify(q.array);
+        }
+        document.getElementById("button2").onclick=function (){
+          document.getElementById("output2").innerHTML
+            = Function(document.getElementById("input2").value)();
+        }
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Consolas", monospace;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>format-omeganum.js test page</h1>
+    <p>
+      Test page adapted from <a href="https://naruyoko.github.io/OmegaNum.js/index.html">https://naruyoko.github.io/OmegaNum.js/index.html</a>.<br><br>
+      String or Array to big number<br>
+      <input type="text" id="input" value="10" style="width:95%;height:40px;"><button id="button">Run</button>
+      <div id="output">Output here</div><br>
+      Arbitrary code execution();<br>
+      <input type="text" id="input2" value='return format("10");' style="width:95%;height:40px;"><button id="button2">Run</button>
+      <div id="output2">Output(eval()) here</div><br>
+    </p>
+  </body>
+</html>
