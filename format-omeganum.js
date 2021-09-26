@@ -1,6 +1,6 @@
 function commaFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
-    let zeroCheck = num.array == undefined ? num : num.array[0]
+    let zeroCheck = num.array ? num.array[0] : num
     if (zeroCheck < 0.001) return (0).toFixed(precision)
     let init = num.toString()
     let portions = init.split(".")
@@ -10,11 +10,11 @@ function commaFormat(num, precision) {
 
 function regularFormat(num, precision) {
     if (isNaN(num)) return "NaN"
-    let zeroCheck = num.array == undefined ? num : num.array[0]
+    let zeroCheck = num.array ? num.array[0] : num
     if (zeroCheck < 0.001) return (0).toFixed(precision)
     let fmt = num.toString()
     let f = fmt.split(".")
-    if (precision == 0) return commaFormat(num.floor == undefined ? Math.floor(num) : num.floor())
+    if (precision == 0) return commaFormat(num.floor ? num.floor() : Math.floor(num))
     else if (f.length == 1) return fmt + "." + "0".repeat(precision)
     else if (f[1].length < precision) return fmt + "0".repeat(precision - f[1].length)
     else return f[0] + "." + f[1].substring(0, precision)
