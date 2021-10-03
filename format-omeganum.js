@@ -1,6 +1,11 @@
 // Set to 1 to print debug information to console
 let FORMAT_DEBUG = 0
 
+// Maximum number of times you can apply 1+log10(x) to number < 10 until the result is
+// indistinguishable from 1. I calculated it myself and got 45, though I set it to 48 to be safe.
+// Reducing this will speed up formatting, but may lead to inaccurate results.
+let MAX_LOGP1_REPEATS = 48
+
 function commaFormat(num, precision) {
     if (num === null || num === undefined) return "NaN"
     let zeroCheck = num.array ? num.array[0] : num
@@ -24,32 +29,56 @@ function regularFormat(num, precision) {
 }
 
 // Basically does the opposite of what standardize in OmegaNum does
+// Set smallTop to true to force the top value in the result below 10
 function polarize(array, smallTop=false) {
-    if (FORMAT_DEBUG >= 1) console.log("Begin polarize: "+array)
-    if (array[0] != Number.POSITIVE_INFINITY) do {
-        while (array[0] >= 10) {
-            array[0] = Math.log10(array[0])
-            array[1] = (array[1]||0) + 1
-            if (FORMAT_DEBUG >= 1) console.log("Increment element 1: "+array)
+    if (FORMAT_DEBUG >= 1) console.log("Begin polarize: ["+array+"], smallTop "+smallTop)
+    if (array.length == 0) array = [0]
+    
+    let bottom = array[0], top = 0, height = 0
+    if (!Number.isFinite(array[0])) {}
+    else if (array.length <= 1) {
+        while (smallTop && bottom >= 10) {
+            bottom = Math.log10(bottom)
+            top += 1
+            height = 1
         }
-        let l = array.length
-        for (i=1;i<l-1;++i) {
-            if (array[i] == 0) continue
-            array[0] = Math.log10(array[0])+array[i]
-            array[i] = 0
-            array[i+1] += 1
-            if (FORMAT_DEBUG >= 1) console.log("Increment element "+(i+1)+": "+array)
-            if (array[0] >= 10) break
+    }
+    else {
+        top = array[1]
+        height = 1
+        while (bottom >= 10 || height < array.length-1 || (smallTop && top >= 10)) {
+            if (bottom >= 10) { // Bottom mode: the bottom number "climbs" to the top
+                if (height == 1) {
+                    // Apply one increment
+                    bottom = Math.log10(bottom)
+                    if (bottom >= 10) { // Apply increment again if necessary
+                        bottom = Math.log10(bottom)
+                        top += 1
+                    }
+                }
+                else if (height < MAX_LOGP1_REPEATS) {
+                    // Apply the first two increments (one or two logs on first, one log on second)
+                    if (bottom >= 1e10) bottom = Math.log10(Math.log10(Math.log10(bottom))) + 2
+                    else bottom = Math.log10(Math.log10(bottom)) + 1
+                    // Apply the remaining increments
+                    for (i=2;i<height;i++) bottom = Math.log10(bottom) + 1
+                }
+                else bottom = 1 // The increment result is indistinguishable from 1
+                
+                top += 1
+                if (FORMAT_DEBUG >= 1) console.log("Bottom mode: bottom "+bottom+", top "+top+", height "+height)
+            }
+            else { // Top mode: height is increased by one
+                bottom = Math.log10(bottom) + top
+                height += 1
+                top = (array[height]||0) + 1
+                if (FORMAT_DEBUG >= 1) console.log("Top mode: bottom "+bottom+", top "+top+", height "+height)
+            }
         }
-        if (array[0] < 10 && array[l-1] >= 10 && smallTop) {
-            array[0] = Math.log10(array[0])+array[l-1]
-            array[l-1] = 0
-            array[l] = 1
-            if (FORMAT_DEBUG >= 1) console.log("Increment top: "+array)
-        }
-    } while (array[0] >= 10)
-    if (FORMAT_DEBUG >= 1) console.log("Result: bottom "+array[0]+", top "+array[array.length-1]+", length "+array.length)
-    return {bottom: array[0], top: array[array.length-1], length: array.length}
+    }
+    
+    if (FORMAT_DEBUG >= 1) console.log("Polarize result: bottom "+bottom+", top "+top+", height "+height)
+    return {bottom: bottom, top: top, height: height}
 }
 
 function format(decimal, precision=2, small=false) {
@@ -121,7 +150,7 @@ function format(decimal, precision=2, small=false) {
     }
     
     let pol = polarize(array, true)
-    return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "J" + commaFormat(pol.length - 1)
+    return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "J" + commaFormat(pol.height)
 }
 
 function formatWhole(decimal) {
