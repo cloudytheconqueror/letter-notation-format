@@ -63,7 +63,7 @@ function polarize(array, smallTop=false) {
         let elem = array[0][0] == 0 ? 1 : 0
         top = array[elem][1]
         height = array[elem][0]
-        while (bottom >= 10 || elem < array.length-1 || (smallTop && top >= 10)) {
+        while (bottom >= 10 || elem < array.length || (smallTop && top >= 10)) {
             if (bottom >= 10) { // Bottom mode: the bottom number "climbs" to the top
                 if (height == 1) {
                     // Apply one increment
@@ -83,9 +83,12 @@ function polarize(array, smallTop=false) {
                 else bottom = 1 // The increment result is indistinguishable from 1
                 
                 top += 1
-                if (FORMAT_DEBUG >= 1) console.log("Bottom mode: bottom "+bottom+", top "+top+", height "+height)
+                if (FORMAT_DEBUG >= 1) console.log("Bottom mode: bottom "+bottom+", top "+top+", height "+height+", elem "+elem)
             }
             else { // Top mode: height is increased by one, or until the next nonzero value
+                // Prevent running top mode more times than necessary
+                if (elem == array.length-1 && array[elem][0] == height && !(smallTop && top >= 10)) break
+                
                 bottom = Math.log10(bottom) + top
                 height += 1
                 if (elem < array.length && height > array[elem][0]) elem += 1
@@ -103,7 +106,7 @@ function polarize(array, smallTop=false) {
                     else top = 1
                 }
                 else top = 1
-                if (FORMAT_DEBUG >= 1) console.log("Top mode: bottom "+bottom+", top "+top+", height "+height)
+                if (FORMAT_DEBUG >= 1) console.log("Top mode: bottom "+bottom+", top "+top+", height "+height+", elem "+elem)
             }
         }
     }
