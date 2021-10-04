@@ -4,7 +4,7 @@
 // in turn based on The Prestige Tree by Jacorb and Aarex
 
 // Set to 1 to print debug information to console
-let FORMAT_DEBUG = 1
+let FORMAT_DEBUG = 0
 
 // Maximum number of times you can apply 1+log10(x) to number < 10 until the result is
 // indistinguishable from 1. I calculated it myself and got 45, though I set it to 48 to be safe.
@@ -39,15 +39,7 @@ function regularFormat(num, precision) {
 // Basically does the opposite of what standardize in ExpantaNum does
 // Set smallTop to true to force the top value in the result below 10
 function polarize(array, smallTop=false) {
-    if (FORMAT_DEBUG >= 1) {
-        let message = "Begin polarize: ["
-        for (i=0;i<array.length;i++) {
-            if (i > 0) message += ",[" + array[i][0] + "," + array[i][1] + "]"
-            else message += "[" + array[i][0] + "," + array[i][1] + "]"
-        }
-        message += "], smallTop " + smallTop
-        console.log(message)
-    }
+    if (FORMAT_DEBUG >= 1) console.log("Begin polarize: "+JSON.stringify(array)+", smallTop "+smallTop)
     if (array.length == 0) array = [[0,0]]
     
     let bottom = array[0][0] == 0 ? array[0][1] : 10, top = 0, height = 0
@@ -244,7 +236,7 @@ function format(num, precision=2, small=false) {
     }
     // K1,000,000 and beyond
     let n = num.layer + 1
-    if (num.gte("J^" + (n + 1) + " 10")) n += 1
+    if (num.gte("J^" + n + " 10")) n += 1
     return "K" + format(n, precision)
 }
 

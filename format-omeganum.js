@@ -36,7 +36,7 @@ function regularFormat(num, precision) {
 // Basically does the opposite of what standardize in OmegaNum does
 // Set smallTop to true to force the top value in the result below 10
 function polarize(array, smallTop=false) {
-    if (FORMAT_DEBUG >= 1) console.log("Begin polarize: ["+array+"], smallTop "+smallTop)
+    if (FORMAT_DEBUG >= 1) console.log("Begin polarize: "+JSON.stringify(array)+", smallTop "+smallTop)
     if (array.length == 0) array = [0]
     
     let bottom = array[0], top = 0, height = 0
