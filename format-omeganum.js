@@ -116,7 +116,7 @@ function format(num, precision=2, small=false) {
         return regularFormat(pol.bottom, precision3) + "F" + commaFormat(pol.top)
     }
     else if (num.lt("10^^^5")) { // F1,000,000 ~ 1G5
-        if ((array[2]||0) >= 1){
+        if ((array[2]||0) >= 1) {
             let rep = array[2]
             array[2] = 0
             return "F".repeat(rep) + format(array, precision)
@@ -130,7 +130,7 @@ function format(num, precision=2, small=false) {
         return regularFormat(pol.bottom, precision3) + "G" + commaFormat(pol.top)
     }
     else if (num.lt("10^^^^5")) { // G1,000,000 ~ 1H5
-        if ((array[3]||0) >= 1){
+        if ((array[3]||0) >= 1) {
             let rep = array[3]
             array[3] = 0
             return "G".repeat(rep) + format(array, precision)
@@ -144,7 +144,7 @@ function format(num, precision=2, small=false) {
         return regularFormat(pol.bottom, precision3) + "H" + commaFormat(pol.top)
     }
     else if (num.lt("10^^^^^5")) { // H1,000,000 ~ 5J4
-        if ((array[4]||0) >= 1){
+        if ((array[4]||0) >= 1) {
             let rep = array[4]
             array[4] = 0
             return "H".repeat(rep) + format(array, precision)
