@@ -100,7 +100,7 @@ function format(num, precision=2, small=false) {
     else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
     else if (num.lt(1000)) return regularFormat(num, precision)
     else if (num.lt(1e9)) return commaFormat(num)
-    else if (num.lt("10^^5")) {
+    else if (num.lt("10^^5")) { // 1e9 ~ 1F5
         let rep = (array[1]||0)-1
         if (array[0] >= 1e9) {
             array[0] = Math.log10(array[0])
@@ -111,11 +111,11 @@ function format(num, precision=2, small=false) {
         let p = array[0] < 1000 ? precision2 : 0
         return "e".repeat(rep) + regularFormat(m, p) + "e" + commaFormat(e)
     }
-    else if (num.lt("10^^1000000")) {
+    else if (num.lt("10^^1000000")) { // 1F5 ~ F1,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "F" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^5")) {
+    else if (num.lt("10^^^5")) { // F1,000,000 ~ 1G5
         if ((array[2]||0) >= 1){
             let rep = array[2]
             array[2] = 0
@@ -125,11 +125,11 @@ function format(num, precision=2, small=false) {
         if (num.gte("10^^" + (n + 1))) n += 1
         return "F" + format(n, precision)
     }
-    else if (num.lt("10^^^1000000")) {
+    else if (num.lt("10^^^1000000")) { // 1G5 ~ G1,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "G" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^^5")) {
+    else if (num.lt("10^^^^5")) { // G1,000,000 ~ 1H5
         if ((array[3]||0) >= 1){
             let rep = array[3]
             array[3] = 0
@@ -139,11 +139,11 @@ function format(num, precision=2, small=false) {
         if (num.gte("10^^^" + (n + 1))) n += 1
         return "G" + format(n, precision)
     }
-    else if (num.lt("10^^^^1000000")) {
+    else if (num.lt("10^^^^1000000")) { // 1H5 ~ H1,000,000
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "H" + commaFormat(pol.top)
     }
-    else if (num.lt("10^^^^^5")) {
+    else if (num.lt("10^^^^^5")) { // H1,000,000 ~ 5J4
         if ((array[4]||0) >= 1){
             let rep = array[4]
             array[4] = 0
@@ -153,7 +153,7 @@ function format(num, precision=2, small=false) {
         if (num.gte("10^^^^" + (n + 1))) n += 1
         return "H" + format(n, precision)
     }
-    
+    // 5J4 and beyond
     let pol = polarize(array, true)
     return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "J" + commaFormat(pol.height)
 }
