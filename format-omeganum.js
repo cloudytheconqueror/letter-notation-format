@@ -1,3 +1,8 @@
+// format-omeganum.js by cloudytheconqueror
+// Code snippets from NumberFormating.js of ducdat0507's The Communitree,
+// which is based on The Modding Tree by Acamaeda (and ported to OmegaNum by upvoid),
+// in turn based on The Prestige Tree by Jacorb and Aarex
+
 // Set to 1 to print debug information to console
 let FORMAT_DEBUG = 0
 
@@ -81,23 +86,23 @@ function polarize(array, smallTop=false) {
     return {bottom: bottom, top: top, height: height}
 }
 
-function format(decimal, precision=2, small=false) {
-    if (OmegaNum.isNaN(decimal)) return "NaN"
+function format(num, precision=2, small=false) {
+    if (OmegaNum.isNaN(num)) return "NaN"
     let precision2 = Math.max(3, precision) // for e
     let precision3 = Math.max(4, precision) // for F, G, H
     let precision4 = Math.max(6, precision) // for J
-    decimal = new OmegaNum(decimal)
-    let array = decimal.array
-    if (decimal.abs().lt(1e-308)) return (0).toFixed(precision)
-    if (decimal.sign < 0) return "-" + format(decimal.neg(), precision)
-    if (decimal.isInfinite()) return "Infinity"
-    if (decimal.lt("0.0001")) { return format(decimal.rec(), precision) + "⁻¹" }
-    else if (decimal.lt(1)) return regularFormat(decimal, precision + (small ? 2 : 0))
-    else if (decimal.lt(1000)) return regularFormat(decimal, precision)
-    else if (decimal.lt(1e9)) return commaFormat(decimal)
-    else if (decimal.lt("10^^5")) {
+    num = new OmegaNum(num)
+    let array = num.array
+    if (num.abs().lt(1e-308)) return (0).toFixed(precision)
+    if (num.sign < 0) return "-" + format(num.neg(), precision)
+    if (num.isInfinite()) return "Infinity"
+    if (num.lt("0.0001")) { return format(num.rec(), precision) + "⁻¹" }
+    else if (num.lt(1)) return regularFormat(num, precision + (small ? 2 : 0))
+    else if (num.lt(1000)) return regularFormat(num, precision)
+    else if (num.lt(1e9)) return commaFormat(num)
+    else if (num.lt("10^^5")) {
         let rep = (array[1]||0)-1
-        if (array[0] >= 1000000000) {
+        if (array[0] >= 1e9) {
             array[0] = Math.log10(array[0])
             rep += 1
         }
@@ -106,46 +111,46 @@ function format(decimal, precision=2, small=false) {
         let p = array[0] < 1000 ? precision2 : 0
         return "e".repeat(rep) + regularFormat(m, p) + "e" + commaFormat(e)
     }
-    else if (decimal.lt("10^^1000000")) {
+    else if (num.lt("10^^1000000")) {
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "F" + commaFormat(pol.top)
     }
-    else if (decimal.lt("10^^^5")) {
+    else if (num.lt("10^^^5")) {
         if ((array[2]||0) >= 1){
             let rep = array[2]
             array[2] = 0
             return "F".repeat(rep) + format(array, precision)
         }
         let n = array[1] + 1
-        if (decimal.gte("10^^" + (n + 1))) n += 1
+        if (num.gte("10^^" + (n + 1))) n += 1
         return "F" + format(n, precision)
     }
-    else if (decimal.lt("10^^^1000000")) {
+    else if (num.lt("10^^^1000000")) {
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "G" + commaFormat(pol.top)
     }
-    else if (decimal.lt("10^^^^5")) {
+    else if (num.lt("10^^^^5")) {
         if ((array[3]||0) >= 1){
             let rep = array[3]
             array[3] = 0
             return "G".repeat(rep) + format(array, precision)
         }
         let n = array[2] + 1
-        if (decimal.gte("10^^^" + (n + 1))) n += 1
+        if (num.gte("10^^^" + (n + 1))) n += 1
         return "G" + format(n, precision)
     }
-    else if (decimal.lt("10^^^^1000000")) {
+    else if (num.lt("10^^^^1000000")) {
         let pol = polarize(array)
         return regularFormat(pol.bottom, precision3) + "H" + commaFormat(pol.top)
     }
-    else if (decimal.lt("10^^^^^5")) {
+    else if (num.lt("10^^^^^5")) {
         if ((array[4]||0) >= 1){
             let rep = array[4]
             array[4] = 0
             return "H".repeat(rep) + format(array, precision)
         }
         let n = array[3] + 1
-        if (decimal.gte("10^^^^" + (n + 1))) n += 1
+        if (num.gte("10^^^^" + (n + 1))) n += 1
         return "H" + format(n, precision)
     }
     
@@ -153,10 +158,10 @@ function format(decimal, precision=2, small=false) {
     return regularFormat(Math.log10(pol.bottom) + pol.top, precision4) + "J" + commaFormat(pol.height)
 }
 
-function formatWhole(decimal) {
-    return format(decimal, 0)
+function formatWhole(num) {
+    return format(num, 0)
 }
 
-function formatSmall(decimal, precision=2) { 
-    return format(decimal, precision, true)    
+function formatSmall(num, precision=2) { 
+    return format(num, precision, true)    
 }
