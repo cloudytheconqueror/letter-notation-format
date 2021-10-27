@@ -208,10 +208,10 @@ To implement J, we need to do the same thing we did for G and H: make the middle
 
 1. If the first element is 10 or higher: set the first element to its own logarithm and increase the second element by 1. If the second element doesn't exist, set it to 1. Repeat until the first element is less than 10.
 2. If the first element is less than 10:
-  1. Go to the first nonzero element after the first element.
-  2. Set the first element to its own logarithm plus the element you're on.
-  3. Set the element you're on to 0, and increase the next element by 1.
-  4. Repeat until the first element is 10 or higher, or you checked the second-to-last element.
+  * Go to the first nonzero element after the first element.
+  * Set the first element to its own logarithm plus the element you're on.
+  * Set the element you're on to 0, and increase the next element by 1.
+  * Repeat until the first element is 10 or higher, or you checked the second-to-last element.
 3. If the first element is less than 10, you're done. Otherwise, go back to step 1.
 
 For example, with [19, 6, 80, 7]:
@@ -236,13 +236,13 @@ This argument, when enabled, adds another step after step 2. The polarize algori
 
 1. If the first element is 10 or higher: set the first element to its own logarithm and increase the second element by 1. If the second element doesn't exist, set it to 1. Repeat until the first element is less than 10.
 2. If the first element is less than 10:
-  1. Go to the first nonzero element after the first element.
-  2. Set the first element to its own logarithm plus the element you're on.
-  3. Set the element you're on to 0, and increase the next element by 1.
-  4. Repeat until the first element is 10 or higher, or you checked the second-to-last element.
+  * Go to the first nonzero element after the first element.
+  * Set the first element to its own logarithm plus the element you're on.
+  * Set the element you're on to 0, and increase the next element by 1.
+  * Repeat until the first element is 10 or higher, or you checked the second-to-last element.
 3. **If the first element is less than 10 and the last element is 10 or higher:**
-  1. Set the first element to its own logarithm plus the last element.
-  2. Set the last element to 0, and add a new element at the end, equal to 1.
+  * Set the first element to its own logarithm plus the last element.
+  * Set the last element to 0, and add a new element at the end, equal to 1.
 4. If the first element is less than 10, you're done. Otherwise, go back to step 1.
 
 Running step 3 will make the first element 10 or higher, so you go through steps 1 and 2 again.
