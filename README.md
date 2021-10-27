@@ -9,6 +9,8 @@ Based on [NumberFormating.js](https://github.com/ducdat0507/communitree/blob/f34
 
 Expanded from the [original gist](https://gist.github.com/cloudytheconqueror/10dc9c5698de3a630a01e53bb968a63e).
 
+Check out the [development story](https://github.com/cloudytheconqueror/letter-notation-format/blob/main/docs/dev-story.md).
+
 ## Letter notation resources
 * [Definition of E to H, as well as x(letter)y notation](https://googology.wikia.org/wiki/User_blog:PsiCubed2/My_Letter_Notation)
 * [Definition of J and K](https://googology.wikia.org/wiki/User_blog:PsiCubed2/Letter_Notation_Part_II)
